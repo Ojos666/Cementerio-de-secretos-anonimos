@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Cementerio Digital de Secretos Anónimos</title>
+    <style>
+        /* Estilo Espacial Minimalista y Misterioso */
+        body {
+            background-color: #0b0b13;
+            color: #e0e0e9;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+            padding: 30px 15px;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        /* Estrellas de fondo animadas */
+        .fondo-estrellas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+        }
+        .contenedor {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(20, 20, 35, 0.8);
+            border: 1px solid #33334d;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+        h1 {
+            color: #9d81ba;
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(157, 129, 186, 0.5);
+        }
+        p.sub {
+            font-size: 0.9rem;
+            color: #8a8a9e;
+            margin-bottom: 30px;
+        }
+        textarea {
+            width: 100%;
+            height: 120px;
+            background: #12121f;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #fff;
+            padding: 12px;
+            font-family: inherit;
+            resize: none;
+            box-sizing: border-box;
+            outline: none;
+        }
+        textarea:focus {
+            border-color: #9d81ba;
+            box-shadow: 0 0 8px rgba(157, 129, 186, 0.3);
+        }
+        button {
+            background: #251f35;
+            color: #bc9eff;
+            border: 1px solid #5a4b75;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-family: inherit;
+            cursor: pointer;
+            margin-top: 15px;
+            font-weight: bold;
+            transition: 0.3s;
+            width: 100%;
+        }
+        button:hover {
+            background: #bc9eff;
+            color: #12121f;
+            box-shadow: 0 0 15px rgba(188, 158, 255, 0.4);
+        }
+        .divisor {
+            margin: 40px 0;
+            border: 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #444, transparent);
+        }
+        .caja-secreto {
+            background: #161626;
+            border-left: 4px solid #9d81ba;
+            padding: 20px;
+            border-radius: 4px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-style: italic;
+            color: #d1d1e0;
+            animation: aparecer 0.5s ease;
+        }
+        @keyframes aparecer {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Espacio simulado para monetización futura */
+        .espacio-anuncio {
+            margin-top: 30px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px dashed #222;
+            font-size: 0.75rem;
+            color: #444;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="fondo-estrellas"></div>
+
+    <div class="contenedor">
+        <h1>🌌 CEMENTERIO DE SECRETOS</h1>
+        <p class="sub">Confiésale al universo de forma 100% anónima aquello que nunca le has dicho a nadie. Tu secreto flotará aquí para siempre.</p>
+        
+        <!-- Sección para Enviar -->
+        <textarea id="input-secreto" placeholder="Escribe tu secreto aquí de forma completamente anónima... Nadie sabrá quién eres."></textarea>
+        <button onclick="enterrarSecreto()">LANZAR SECRETO AL ESPACIO</button>
+
+        <hr class="divisor">
+
+        <!-- Sección para Leer -->
+        <p style="font-size: 0.95rem; color: #bc9eff; margin-bottom: 10px;">💬 Almas que confesaron sus verdades:</p>
+        <div id="pantalla-secreto" class="caja-secreto">
+            "Presiona el botón de abajo para desenterrar un secreto al azar del universo..."
+        </div>
+        <button onclick="desenterrarSecreto()" style="background: #161a2b; color: #8ba3ff; border-color: #3b4b75;">DESENTERRAR UN SECRETO AL AZAR</button>
+
+        <!-- Marcador de posición para publicidad -->
+        <div class="espacio-anuncio" id="bloque-publicidad">
+            [Espacio reservado para monetización de Google AdSense]
+        </div>
+    </div>
+
+    <script>
+        // Secretos iniciales por defecto mientras se llena tu página con los de los usuarios
+        let secretosLocales = [
+            "A veces me alegro cuando cancelan los planes porque solo quiero quedarme durmiendo.",
+            "Tengo 24 años y todavía le tengo un miedo terrible a la completa oscuridad.",
+            "Rompí la taza favorita de mi mamá hace un año y culpé al gato. Ella todavía no lo sabe.",
+            "Fingí estar enfermo para no ir a una boda y me quedé jugando videojuegos todo el día.",
+            "Creo que me equivoqué por completo de carrera universitaria pero ya es muy tarde para salirme.",
+            "Uso el perfume de mi ex cuando me siento muy solo para recordar los viejos tiempos.",
+            "Le dije a todos que borré mis redes sociales por salud mental, pero solo abrí cuentas secretas."
+        ];
+
+        // Cargar secretos guardados previamente en el dispositivo del usuario
+        if (localStorage.getItem('archivo_secretos')) {
+            secretosLocales = JSON.parse(localStorage.getItem('archivo_secretos'));
+        }
+
+        function enterrarSecreto() {
+            const texto = document.getElementById('input-secreto').value.trim();
+            
+            if (texto === "") {
+                alert("El vacío no acepta mensajes en blanco. Escribe un secreto.");
+                return;
+            }
+
+            // Guardar el secreto en la lista
+            secretosLocales.push(texto);
+            localStorage.setItem('archivo_secretos', JSON.stringify(secretosLocales));
+
+            // Feedback visual al usuario
+            document.getElementById('input-secreto').value = "";
+            alert("🌌 Tu secreto ha sido enterrado de forma anónima en el tejido del universo.");
+        }
+
+        function desenterrarSecreto() {
+            const pantalla = document.getElementById('pantalla-secreto');
+            
+            // Animación rápida de recarga
+            pantalla.style.opacity = 0;
+            
+            setTimeout(() => {
+                // Elegir un secreto aleatorio de la lista
+                const indiceAleatorio = Math.floor(Math.random() * secretosLocales.length);
+                pantalla.innerText = `"${secretosLocales[indiceAleatorio]}"`;
+                pantalla.style.opacity = 1;
+            }, 300);
+        }
+    </script>
+
+</body>
+</html>
